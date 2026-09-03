@@ -88,7 +88,7 @@
 
   /* ---------- header ---------- */
   header{padding:20px 0 0;position:relative;z-index:2;}
-  .logo{font-family:var(--serif);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);text-align:center;}
+  .logo{font-family:var(--serif);font-weight:700;font-size:23px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);text-align:center;}
   .logo span{color:var(--gold-1);}
 
   /* ---------- hero ---------- */
@@ -151,10 +151,17 @@
 
   /* ---------- date form ---------- */
   .datecard{
-    background:var(--panel);border:1px solid rgba(227,180,148,0.25);border-radius:24px;
+    background:var(--panel);border:1px solid rgba(227,180,148,0.55);border-radius:24px;
     padding:26px 20px 24px;text-align:left;
+    box-shadow:0 0 0 1px rgba(227,180,148,0.12),0 0 28px rgba(227,180,148,0.22);
+    animation:datecard-pulse 2.6s ease-in-out infinite;
   }
-  .datecard label{display:block;font-size:13px;color:var(--gold-1);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-weight:700;text-align:center;}
+  @keyframes datecard-pulse{
+    0%,100%{box-shadow:0 0 0 1px rgba(227,180,148,0.12),0 0 22px rgba(227,180,148,0.18);}
+    50%{box-shadow:0 0 0 1px rgba(227,180,148,0.28),0 0 40px rgba(227,180,148,0.4);}
+  }
+  @media (prefers-reduced-motion:reduce){.datecard{animation:none;}}
+  .datecard label{display:block;font-size:16px;color:var(--gold-1);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-weight:700;text-align:center;}
   .date-fields{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;margin-bottom:14px;}
   .date-fields select{
     width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
@@ -744,6 +751,9 @@
     var offset = (signA - signB + 12) % 12;
     return Math.min(offset, 12-offset);
   }
+  function rawOffset(signA, signB){
+    return (signA - signB + 12) % 12;
+  }
 
 /* =========================================================================
    ЧАСТЬ 2 - КОНТЕНТ-ДВИЖОК (шаблоны голоса Ольги: сценарий-абзац по
@@ -761,15 +771,52 @@
   // 0 conjunction, 1 semisextile, 2 sextile, 3 square, 4 trine, 5 quincunx, 6 opposition
   // все глаголы в настоящем времени намеренно (в прошедшем времени в русском есть род - "перешла/перешёл" -
   // а планеты бывают и мужского, и женского рода, шаблон должен работать для любой)
+  // Несколько вариантов формулировки на каждый канонический тип - иначе разные
+  // знаки, попавшие в один и тот же аспект, звучат слово-в-слово одинаково.
+  // Выбор варианта детерминирован (hash от знака планеты + знака человека),
+  // так что у конкретного человека текст стабилен между заходами, но у разных
+  // людей в одном аспекте - разная формулировка.
   var CONNECTOR = {
-    0: function(pn,sg){ return pn+" сейчас стоит в твоём собственном знаке, в "+SIGN_LOC[sg]+" - это не фон, а прямое попадание: то, что поднимается сейчас, ты почувствуешь на себе, без смягчения."; },
-    1: function(pn,sg){ return pn+" сейчас в "+SIGN_LOC[sg]+" - знак, который слегка не совпадает по ритму с твоим. Ничего критичного, но привычные схемы сейчас будут спотыкаться на мелочах, и это раздражает больше, чем должно."; },
-    2: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" открывает лёгкое окно возможностей - оно не свалится само, но если сделать первый шаг, сработает быстрее, чем обычно."; },
-    3: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" встаёт в квадрат к твоему знаку - это трение, и оно реальное. Именно оно и двигает: то, что стояло на месте месяцами, начнёт требовать решения именно сейчас."; },
-    4: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" идёт трином к твоему знаку - поддержка приходит сама, почти без усилий. Риск ровно один - расслабиться и упустить этот момент, пока он есть."; },
-    5: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" создаёт рассинхрон: логика этого месяца и твоя обычная логика тянут в разные стороны. Придётся выбирать, а не пытаться усидеть на двух стульях."; },
-    6: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" - ровно напротив твоего знака. Это зеркало, не атака: то, что раздражает в других сейчас, стоит проверить в себе. Баланс, а не победа одной стороны."; }
+    0: [
+      function(pn,sg){ return pn+" сейчас стоит в твоём собственном знаке, в "+SIGN_LOC[sg]+" - это не фон, а прямое попадание: то, что поднимается сейчас, ты почувствуешь на себе, без смягчения."; },
+      function(pn,sg){ return pn+" ровно в "+SIGN_LOC[sg]+", твоём знаке - усиление в чистом виде. Всё, что обычно приглушено, сейчас звучит громче и требует прямого ответа, не отговорок."; }
+    ],
+    1: [
+      function(pn,sg){ return pn+" сейчас в "+SIGN_LOC[sg]+" - знак, который слегка не совпадает по ритму с твоим. Ничего критичного, но привычные схемы сейчас будут спотыкаться на мелочах, и это раздражает больше, чем должно."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" сбивает твой обычный темп на полшага - не конфликт, а лёгкая рассинхронизация: то, что раньше шло само, сейчас требует чуть больше внимания к деталям."; }
+    ],
+    2: [
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" открывает лёгкое окно возможностей - оно не свалится само, но если сделать первый шаг, сработает быстрее, чем обычно."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" идёт с тобой в союзе - не громкая удача, а рабочая поддержка: то, что двигала месяцами, сейчас пойдёт чуть легче, если не затягивать."; }
+    ],
+    3: [
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" встаёт в квадрат к твоему знаку - это трение, и оно реальное. Именно оно и двигает: то, что стояло на месте месяцами, начнёт требовать решения именно сейчас."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" давит на твой знак под прямым углом - конфликт интересов, который до этого можно было откладывать, сейчас откладывать уже не получится."; }
+    ],
+    4: [
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" идёт трином к твоему знаку - поддержка приходит сама, почти без усилий. Риск ровно один - расслабиться и упустить этот момент, пока он есть."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" течёт с твоим знаком в одном русле - редкий случай, когда усилие и результат совпадают почти без трения. Не проспи это окно."; }
+    ],
+    5: [
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" создаёт рассинхрон: логика этого месяца и твоя обычная логика тянут в разные стороны. Придётся выбирать, а не пытаться усидеть на двух стульях."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" смотрит на твой знак искоса - неудобный, кривой угол: вроде бы всё по плану, но что-то постоянно требует мелкой корректировки на ходу."; }
+    ],
+    6: [
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" - ровно напротив твоего знака. Это зеркало, не атака: то, что раздражает в других сейчас, стоит проверить в себе. Баланс, а не победа одной стороны."; },
+      function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" тянет одеяло на себя с противоположной стороны твоего круга - придётся искать равновесие между «хочу как я» и «нужно как другому», а не продавливать своё."; }
+    ]
   };
+  function pickConnector(canonical, offsetRaw, sphereKey){
+    var variants = CONNECTOR[canonical];
+    // Канонический тип (0-6) получается схлопыванием пары {k, 12-k} - у обоих
+    // знаков этой пары offsetRaw имеет одинаковую чётность (сумма = 12), так
+    // что хэш по чётности их не различит. Вместо этого прямо смотрим, с какой
+    // стороны пары мы находимся ("плюс" или "минус"), и дальше подмешиваем
+    // сферу, чтобы у одного человека разные сферы не совпадали по варианту.
+    var side = (offsetRaw === canonical) ? 0 : 1;
+    var seed = side + sphereKey.length;
+    return variants[seed % variants.length];
+  }
 
   var VALENCE_HARD = {0:1,3:1,5:1,6:1}; // трудные канонические типы
   var VALENCE_EASY = {1:1,2:1,4:1};
@@ -781,7 +828,9 @@
         : "В деньгах это читается как окно: не шальные деньги с неба, а реальная возможность закрыть то, что давно откладывала."; },
       microHard: "Не подписывай и не переводи ничего крупного в порыве - выжди сутки, перепроверь договор и зафиксируй только то, что уже реально твоё.",
       microEasy: "Сделай тот звонок или тот запрос по деньгам, который откладывала - сейчас момент, когда его услышат быстрее.",
-      moonAspects:[3,9], moonLabel: hardLabel("осторожнее с деньгами"), moonLabelEasy: null
+      moonAspects:[3], moonAspectsEasy:[2,4],
+      moonTextEasy: ["Луна создаёт лёгкий момент для денег - удачный день, чтобы попросить, предложить или закрыть вопрос по оплате.", "Ещё один денежный день на подъёме - хорошо назначать встречи про деньги именно сегодня."],
+      moonTextHard: ["Луна создаёт напряжение в деньгах - день, когда легко потратить на эмоциях или переоценить свои силы, лучше отложить крупные решения.", "Ещё один денежный день на пределе - не тот момент, чтобы одалживать или занимать, эмоции сейчас сильнее расчёта."]
     },
     { key:"relationships", title:"Отношения", base:"venus", retroClause:"mars",
       lead: function(hard){ return hard
@@ -789,7 +838,9 @@
         : "В отношениях это ощущается как тепло, которое приходит само - близость, разговор без напряжения, момент, когда легче услышать и услышать себя."; },
       microHard: "Отложи выяснение отношений на день, когда спадёт напряжение - сказанное сейчас запомнится дольше, чем стоит того.",
       microEasy: "Не жди повода - напиши или предложи встречу первой, сейчас это примут теплее обычного.",
-      moonAspects:[6], moonAspectsEasy:[0]
+      moonAspects:[6], moonAspectsEasy:[0],
+      moonTextEasy: ["Лёгкий лунный день для отношений - разговор пройдёт мягче обычного, хорошее время для близости.", "Ещё один тёплый лунный день - подходящий момент для откровенного разговора."],
+      moonTextHard: ["Напряжённый лунный день в отношениях - раздражительность выше обычного, лучше не выяснять отношения именно сегодня.", "Ещё один острый лунный день - слова сейчас звучат резче, чем ты хочешь сказать, лучше промолчать и вернуться к теме позже."]
     },
     { key:"career", title:"Карьера и дело", base:"mars", retroClause:"saturn",
       lead: function(hard){ return hard
@@ -797,7 +848,9 @@
         : "В деле это ход вперёд - энергия, которая двигает задачи, застрявшие неделями. То, что раньше требовало трёх попыток, сейчас получится с первой."; },
       microHard: "Не дави на людей и не форсируй запуск на этой неделе - пересмотри план, убери лишний шаг, вернись к делу через пару дней с ясной головой.",
       microEasy: "Запускай, пиши, предлагай - именно сейчас это дело сдвинется быстрее, чем в спокойный месяц.",
-      moonAspects:[3], moonAspectsEasy:[2,4]
+      moonAspects:[3], moonAspectsEasy:[2,4],
+      moonTextEasy: ["Лунный день на подъёме для дела - хорошо начинать, предлагать, договариваться.", "Ещё один рабочий день в плюс - переговоры и презентации сегодня пройдут легче обычного."],
+      moonTextHard: ["Лунный день с сопротивлением в делах - планы буксуют, лучше не форсировать и не давить.", "Ещё один день с трением на работе - мелкие накладки будут раздражать больше, чем они того стоят, не разрастай конфликт."]
     },
     { key:"health", title:"Здоровье", base:"saturn", retroClause:"mars",
       lead: function(hard){ return hard
@@ -805,10 +858,11 @@
         : "В теле это выражается как ресурс, который наконец начинает восстанавливаться - если дать себе движение и воздух, а не только отдых лёжа."; },
       microHard: "Сократи нагрузку на эту неделю сознательно - выбери сон и режим вместо ещё одной задачи, тело сейчас не обманешь.",
       microEasy: "Добавь одну спокойную физическую практику в эти дни - прогулку, растяжку, бассейн - тело сейчас откликается быстро.",
-      moonAspects:[3], moonAspectsEasy:[4]
+      moonAspects:[3], moonAspectsEasy:[4],
+      moonTextEasy: ["Лёгкий день для тела - хорошо для мягкой активности и восстановления.", "Ещё один день с ресурсом - тело сегодня откликается быстрее обычного, хороший момент для практики."],
+      moonTextHard: ["День, когда тело чувствует всё острее обычного - усталость и раздражительность заметнее, дай себе паузу.", "Ещё один день на пределе - нервная система работает на повышенных оборотах, снизь темп сознательно."]
     }
   ];
-  function hardLabel(t){ return t; }
 
   var RETRO_CLAUSE = {
     mercury: " Добавь к этому - Меркурий в этом месяце ретрограден: любые договорённости, переводы и обещания перепроверяй дважды, прежде чем на них полагаться.",
@@ -826,10 +880,11 @@
     var lon = geoLongitude(sphere.base, refDate);
     var baseSign = signIndex(lon);
     var canonical = canonicalOffset(baseSign, userSignIdx);
+    var offsetRaw = rawOffset(baseSign, userSignIdx);
     var hard = !!VALENCE_HARD[canonical];
     var planetName = PLANET_NAME[sphere.base];
 
-    var scenario = CONNECTOR[canonical](planetName, baseSign) + " " + sphere.lead(hard);
+    var scenario = pickConnector(canonical, offsetRaw, sphere.key)(planetName, baseSign) + " " + sphere.lead(hard);
 
     var baseRetro = isRetrograde(sphere.base, refDate);
     if (sphere.retroClause && isRetrograde(sphere.retroClause, refDate)){
@@ -848,22 +903,34 @@
         dated.push({day:ev.day, text: planetName+" выходит из ретроградности и идёт вперёд - хороший день, чтобы возобновить то, что стояло на паузе."});
       }
     });
-    var wantAspects = hard ? sphere.moonAspects : (sphere.moonAspectsEasy || sphere.moonAspects);
-    var moonDays = moonAspectDays(year, month, userSignIdx, wantAspects, 2);
-    var moonTextHardVariants = [
-      "Луна проходит через напряжённую точку к твоему знаку - день эмоционально острый, решения лучше не принимать с утра.",
-      "Ещё один напряжённый лунный день - раздражительность копится, лучше не выяснять отношения и не решать важное именно сегодня."
-    ];
-    var moonTextEasyVariants = [
-      "Луна проходит через гармоничную точку к твоему знаку - день, когда легче договориться и легче действовать.",
-      "Ещё один лёгкий лунный день - хорошее время повторить попытку или закрепить то, что начала раньше."
-    ];
-    moonDays.forEach(function(day, idx){
-      var variants = hard ? moonTextHardVariants : moonTextEasyVariants;
-      dated.push({day:day, text: variants[idx % variants.length]});
+    // Смешиваем лёгкие и напряжённые дни внутри одной сферы - даже если общий
+    // заголовок сферы "месяц работает на тебя", в деньгах/здоровье/карьере
+    // всё равно бывают отдельные дни, где стоит притормозить, и наоборот.
+    var easyDays = moonAspectDays(year, month, userSignIdx, sphere.moonAspectsEasy || [], 2);
+    var hardDays = moonAspectDays(year, month, userSignIdx, sphere.moonAspects || [], 2);
+    easyDays.forEach(function(day, idx){
+      dated.push({day:day, text: sphere.moonTextEasy[idx % sphere.moonTextEasy.length]});
+    });
+    hardDays.forEach(function(day, idx){
+      dated.push({day:day, text: sphere.moonTextHard[idx % sphere.moonTextHard.length]});
     });
     dated.sort(function(a,b){ return a.day-b.day; });
-    dated = dated.slice(0,3);
+    // не больше 3 точек, но стараемся оставить хотя бы одну лёгкую и одну
+    // напряжённую, если обе реально есть в этом месяце - не только одну сторону
+    if (dated.length > 3){
+      var kept = dated.slice(0,3);
+      var hasEasy = kept.some(function(p){ return sphere.moonTextEasy.indexOf(p.text)!==-1; });
+      var hasHard = kept.some(function(p){ return sphere.moonTextHard.indexOf(p.text)!==-1; });
+      if (!hasEasy){
+        var firstEasy = dated.find(function(p){ return sphere.moonTextEasy.indexOf(p.text)!==-1; });
+        if (firstEasy) kept[2] = firstEasy;
+      } else if (!hasHard){
+        var firstHard = dated.find(function(p){ return sphere.moonTextHard.indexOf(p.text)!==-1; });
+        if (firstHard) kept[2] = firstHard;
+      }
+      kept.sort(function(a,b){ return a.day-b.day; });
+      dated = kept;
+    }
     if (dated.length===0){
       dated.push({day:15, text: planetName+" весь месяц остаётся в "+SIGN_LOC[baseSign]+" без резких переходов - ровный фон, без скачков."});
     }
