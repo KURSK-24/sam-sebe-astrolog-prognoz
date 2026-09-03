@@ -197,6 +197,7 @@
     font-size:14.5px;color:var(--ink);border-left:2px solid var(--gold-1);padding-left:12px;line-height:1.55;
   }
   .sphere-card .action b{color:var(--gold-1);}
+  .sphere-card .next-note{font-size:12.5px;color:var(--ink-faint);font-style:italic;margin-top:10px;}
   @media (min-width:760px){ .sphere-grid{grid-template-columns:1fr 1fr;} }
 
   /* ---------- bridge/reassurance ---------- */
@@ -209,6 +210,8 @@
   .bridge{background:var(--panel-2);border:1px solid var(--line);padding:32px 24px;border-radius:24px;text-align:left;}
   .bridge h2{margin-bottom:14px;font-size:23px;}
   .bridge p{font-size:16px;}
+  .bridge-link{color:var(--gold-1);font-weight:700;text-decoration:underline;text-underline-offset:3px;}
+  .bridge-link:hover{color:var(--gold-2);}
 
   /* ---------- course pitch ---------- */
   .quote-block{
@@ -307,6 +310,9 @@
     padding:11px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink);}
   .tier-row:first-of-type{border-top:none;}
   .tier-row .tprice{color:var(--gold-1);font-weight:700;white-space:nowrap;}
+  a.tier-link{text-decoration:none;border-radius:10px;margin:0 -8px;padding:11px 8px;transition:background .15s;}
+  a.tier-link:hover,a.tier-link:focus-visible{background:rgba(227,180,148,0.1);}
+  a.tier-link .tprice{color:var(--gold-1);}
   @media (min-width:760px){ .svc-inner{grid-template-columns:1fr 1fr;} }
 
   /* ---------- footer ---------- */
@@ -438,8 +444,8 @@
 <section class="locked" id="bridge">
   <div class="frame">
     <div class="bridge reveal">
-      <h2>Это посчитал твой прогноз. А что, если ты сможешь видеть это сама?</h2>
-      <p>То, что ты только что получила - реальный расчёт по положению планет на твою дату, а не разовая подсказка. Но твой прогноз считает только <strong>текущий</strong> месяц. Курс «Сам себе астролог» учит считать <strong>любой</strong> период - не только себе, но и своим родным и близким. Этому можно научиться, как учатся считать хорар или читать натальную карту. Тогда не придётся ждать месяц следующего прогноза - ты сама увидишь свои периоды, для любой сферы, в любой момент, для себя и для тех, кто рядом</p>
+      <h2>Ты только что получила расчёт на текущий месяц. А что дальше?</h2>
+      <p>Это реальный расчёт по положению планет на твою дату, а не разовая подсказка - но он считает только <strong>текущий</strong> месяц. Дальше у тебя есть три пути: подождать, пока период сменится и обновить расчёт самой на этой же странице; <a href="#services" class="bridge-link" id="bridgeToServices">заказать разбор у специалиста</a> - Ольга посчитает лично, по твоему вопросу или на любой срок; или <a href="#pitch" class="bridge-link">научиться считать самой</a> - тогда не придётся ждать и заказывать, ты будешь видеть свои периоды сама, в любой момент, для себя и для тех, кто рядом</p>
     </div>
   </div>
 </section>
@@ -552,18 +558,16 @@
       <div class="svc-inner">
         <div class="svc-card">
           <h3>Личный прогноз от Ольги</h3>
-          <p>Ольга лично считает твой расклад - не автоматика, а её реальный разбор по твоей дате рождения</p>
-          <div class="tier-row"><span>1 сфера на месяц</span><span class="tprice">500₽</span></div>
-          <div class="tier-row"><span>все 4 сферы на месяц</span><span class="tprice">1 990₽</span></div>
-          <div class="tier-row"><span>весь год по всем сферам</span><span class="tprice">12 000₽</span></div>
-          <a class="btn-ghost" style="margin-top:16px;" href="https://t.me/komanda_sreda?text=%D0%9F%D0%9E%D0%9B%D0%9D%D0%AB%D0%99%20%D0%9F%D0%A0%D0%9E%D0%93%D0%9D%D0%9E%D0%97%201%20990%E2%82%BD" target="_blank" rel="noopener">Заказать личный прогноз →</a>
+          <p>Ольга лично считает твой расклад - не автоматика, а её реальный разбор по твоей дате рождения. Жми на нужный тариф - каждый ведёт в переписку с точной заявкой</p>
+          <a class="tier-row tier-link" href="https://t.me/komanda_sreda?text=%D0%9F%D0%A0%D0%9E%D0%93%D0%9D%D0%9E%D0%97%201%20%D1%81%D1%84%D0%B5%D1%80%D0%B0%20500%E2%82%BD" target="_blank" rel="noopener"><span>1 сфера на месяц</span><span class="tprice">500₽ →</span></a>
+          <a class="tier-row tier-link" href="https://t.me/komanda_sreda?text=%D0%9F%D0%9E%D0%9B%D0%9D%D0%AB%D0%99%20%D0%9F%D0%A0%D0%9E%D0%93%D0%9D%D0%9E%D0%97%201%20990%E2%82%BD" target="_blank" rel="noopener"><span>все 4 сферы на месяц</span><span class="tprice">1 990₽ →</span></a>
+          <a class="tier-row tier-link" href="https://t.me/komanda_sreda?text=%D0%9F%D0%A0%D0%9E%D0%93%D0%9D%D0%9E%D0%97%20%D0%93%D0%9E%D0%94%2012%20000%E2%82%BD" target="_blank" rel="noopener"><span>весь год по всем сферам</span><span class="tprice">12 000₽ →</span></a>
         </div>
         <div class="svc-card">
           <h3>Хорарная консультация</h3>
-          <p>У тебя есть конкретный вопрос - Ольга отвечает лично, без общих формулировок</p>
-          <div class="tier-row"><span>1 вопрос</span><span class="tprice">2 990₽</span></div>
-          <div class="tier-row"><span>3 вопроса</span><span class="tprice">4 990₽</span></div>
-          <a class="btn-ghost" style="margin-top:16px;" href="https://t.me/komanda_sreda?text=%D0%A5%D0%9E%D0%A0%D0%90%D0%A0%201%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%20%E2%80%94%202%20990%E2%82%BD" target="_blank" rel="noopener">Задать вопрос Ольге →</a>
+          <p>У тебя есть конкретный вопрос - Ольга отвечает лично, без общих формулировок. Жми на нужный тариф</p>
+          <a class="tier-row tier-link" href="https://t.me/komanda_sreda?text=%D0%A5%D0%9E%D0%A0%D0%90%D0%A0%201%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%20%E2%80%94%202%20990%E2%82%BD" target="_blank" rel="noopener"><span>1 вопрос</span><span class="tprice">2 990₽ →</span></a>
+          <a class="tier-row tier-link" href="https://t.me/komanda_sreda?text=%D0%A5%D0%9E%D0%A0%D0%90%D0%A0%203%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%D0%B0%20%E2%80%94%204%20990%E2%82%BD" target="_blank" rel="noopener"><span>3 вопроса</span><span class="tprice">4 990₽ →</span></a>
         </div>
       </div>
     </div>
@@ -991,7 +995,7 @@
     grid.innerHTML = '';
     var anyHard = false, anyPositive = false;
 
-    SPHERES.forEach(function(sphere){
+    SPHERES.forEach(function(sphere, idx){
       var res = buildSphere(sphere, userSignIdx, curYear, curMonth);
       if (res.hard) anyHard = true; else anyPositive = true;
       var card = document.createElement('div');
@@ -999,12 +1003,18 @@
       var datesHtml = res.dated.map(function(dd){
         return '<div class="d-row"><span class="dnum">'+dd.day+' '+monthGen+'</span> - '+dd.text+'</div>';
       }).join('');
+      // Напоминание, что расклад именно на этот месяц - не на всех карточках
+      // подряд (иначе мозолит глаз), а через одну.
+      var nextMonthNote = (idx===0 || idx===2)
+        ? '<p class="next-note">В следующем месяце расклад может измениться - вернись на страницу и пересчитай заново.</p>'
+        : '';
       card.innerHTML =
         '<div class="sph-eyebrow">'+res.eyebrow+'</div>' +
         '<h3>'+res.headline+'</h3>' +
         '<p class="scenario">'+res.scenario+'</p>' +
         '<div class="dates">'+datesHtml+'</div>' +
-        '<p class="action"><b>Микродействие:</b> '+res.micro+'</p>';
+        '<p class="action"><b>Микродействие:</b> '+res.micro+'</p>' +
+        nextMonthNote;
       grid.appendChild(card);
     });
 
@@ -1111,11 +1121,17 @@
 
   /* ---------- services accordion ---------- */
   var svcToggle = document.getElementById('svcToggle'), svcPanel = document.getElementById('svcPanel');
-  svcToggle.addEventListener('click', function(){
-    var open = svcPanel.classList.toggle('open');
+  function setServicesOpen(open){
+    if (open) svcPanel.classList.add('open'); else svcPanel.classList.remove('open');
     svcToggle.setAttribute('aria-expanded', open? 'true':'false');
     svcToggle.querySelector('span').textContent = open ? 'Скрыть услуги и цены' : 'Показать услуги и цены';
-  });
+  }
+  svcToggle.addEventListener('click', function(){ setServicesOpen(!svcPanel.classList.contains('open')); });
+
+  var bridgeToServices = document.getElementById('bridgeToServices');
+  if (bridgeToServices){
+    bridgeToServices.addEventListener('click', function(){ setServicesOpen(true); });
+  }
 
 })();
 </script>
