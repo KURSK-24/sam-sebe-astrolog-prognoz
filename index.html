@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Твой персональный прогноз на месяц - Астрологика</title>
+<meta name="description" content="Персональный прогноз на месяц по дате рождения - деньги, отношения, карьера, здоровье. Реальный расчёт по положению планет, бесплатно и мгновенно.">
+<style>
+  :root{
+    --bg:#080b16;
+    --bg-deep:#05070f;
+    --panel:#131a2c;
+    --panel-2:#171f34;
+    --ink:#f5f0ea;
+    --ink-dim:rgba(245,240,234,0.78);
+    --ink-faint:rgba(245,240,234,0.52);
+    --gold-1:#e3b494;
+    --gold-2:#c98a68;
+    --grad-1:#e3b494;
+    --grad-2:#c98a68;
+    --blue-acc:#8fb4d9;
+    --line:rgba(245,240,234,0.12);
+    --rust:#c98a68;
+    --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(60% 40% at 80% 8%, rgba(227,180,148,0.14), transparent 60%),
+      radial-gradient(50% 35% at 15% 30%, rgba(143,180,217,0.08), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    position:relative;
+  }
+  .stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.85;}
+  .stars circle.tw{animation:twinkle 3.6s ease-in-out infinite;}
+  @keyframes twinkle{0%,100%{opacity:.25;} 50%{opacity:1;}}
+  ::selection{background:rgba(227,180,148,0.3);color:var(--ink);}
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  h1,h2,h3{font-family:var(--serif);font-weight:700;text-wrap:balance;margin:0;}
+  p{margin:0;color:var(--ink-dim);text-wrap:pretty;}
+  .num{font-variant-numeric:tabular-nums;}
+  .frame{max-width:640px;margin:0 auto;padding:0 20px;position:relative;z-index:1;text-align:center;}
+  .frame.wide{max-width:820px;}
+  section{padding:52px 0;}
+  section + section{border-top:1px solid var(--line);}
+  .eyebrow{font-size:15px;letter-spacing:.04em;color:var(--gold-1);margin-bottom:16px;font-weight:700;text-transform:uppercase;}
+  strong{color:var(--ink);font-weight:700;}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    background:linear-gradient(135deg, var(--grad-1), var(--grad-2));
+    color:#160f08;
+    font-family:var(--sans);font-weight:700;font-size:17px;
+    padding:17px 30px;border-radius:999px;width:100%;
+    text-decoration:none;border:none;cursor:pointer;
+    box-shadow:0 10px 28px rgba(201,138,104,0.28);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(201,138,104,0.4);}
+  .btn:focus-visible{outline:2px solid var(--gold-1);outline-offset:3px;}
+  .btn-ghost{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:transparent;color:var(--ink);border:1px solid var(--line);
+    font-family:var(--sans);font-weight:600;font-size:15px;
+    padding:14px 24px;border-radius:999px;width:100%;text-decoration:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .btn-ghost:hover{border-color:var(--gold-1);background:rgba(227,180,148,0.06);}
+  @media (min-width:560px){ .btn,.btn-ghost{width:auto;} }
+  h2{font-size:27px;line-height:1.25;margin-bottom:20px;}
+  @media (min-width:640px){ h2{font-size:32px;} }
+  .section-body p{margin-bottom:16px;font-size:17px;line-height:1.7;}
+  .section-body p:last-child{margin-bottom:0;}
+  @media (min-width:640px){ .section-body p{font-size:18px;} }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1;transform:none;transition:none;} }
+
+  /* ---------- header ---------- */
+  header{padding:20px 0 0;position:relative;z-index:2;}
+  .logo{font-family:var(--serif);font-weight:700;font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim);text-align:center;}
+  .logo span{color:var(--gold-1);}
+
+  /* ---------- hero ---------- */
+  .hero{padding-top:28px;padding-bottom:8px;}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--gold-1);
+    border:1px solid rgba(227,180,148,0.35);padding:8px 16px;border-radius:999px;margin-bottom:22px;
+    background:rgba(227,180,148,0.06);
+  }
+  .hero h1{
+    font-size:clamp(28px,7vw,44px);line-height:1.14;text-transform:none;margin-bottom:22px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(90deg, var(--grad-1), var(--grad-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hook-list{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px;text-align:left;}
+  .hook-list li{
+    padding:14px 16px;background:var(--panel);border:1px solid var(--line);border-radius:14px;
+    font-size:16px;color:var(--ink);position:relative;padding-left:40px;text-wrap:pretty;
+  }
+  .hook-list li::before{
+    content:"✦";position:absolute;left:14px;top:14px;
+    background:linear-gradient(135deg, var(--grad-1), var(--grad-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;font-size:14px;
+  }
+  .hero .rebut{font-size:15px;color:var(--ink-faint);max-width:44ch;margin:0 auto 30px;font-style:italic;line-height:1.6;}
+
+  .hero-portrait{
+    margin:0 auto 30px;max-width:220px;border-radius:24px;padding:10px;
+    background:linear-gradient(160deg, rgba(227,180,148,0.22), rgba(143,180,217,0.14));
+    box-shadow:0 18px 40px rgba(5,7,15,0.5);
+  }
+  .hero-portrait .ph-frame{
+    border-radius:18px;overflow:hidden;position:relative;aspect-ratio:1/1;
+    background:radial-gradient(120% 120% at 50% 0%, rgba(227,180,148,0.25), transparent 60%), var(--panel);
+  }
+  .hero-portrait .ph-frame img{
+    width:100%;height:100%;object-fit:cover;object-position:center 18%;
+    mix-blend-mode:normal;filter:saturate(0.94) contrast(1.03);
+  }
+  .hero-portrait .ph-frame::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(8,11,22,0) 55%, rgba(8,11,22,0.55) 100%),
+               linear-gradient(0deg, rgba(19,26,44,0.18), rgba(19,26,44,0.18));
+    pointer-events:none;
+  }
+  .hero-portrait .cap{font-size:13px;color:var(--ink-faint);text-align:center;line-height:1.5;padding:12px 6px 6px;}
+  .hero-portrait .cap strong{color:var(--ink-dim);}
+  @media (min-width:860px){
+    .hero .frame{max-width:1020px;text-align:left;}
+    .hero-layout{display:grid;grid-template-columns:1.15fr 0.85fr;gap:52px;align-items:start;}
+    .hero-copy{text-align:left;}
+    .hero-copy .hook-list, .hero-copy .rebut{margin-left:0;margin-right:0;}
+    .hero-copy .rebut{max-width:52ch;}
+    .hero-aside{position:sticky;top:28px;}
+    .hero-portrait{margin:0 0 22px;max-width:100%;}
+    .datecard{text-align:left;}
+  }
+
+  /* ---------- date form ---------- */
+  .datecard{
+    background:var(--panel);border:1px solid rgba(227,180,148,0.25);border-radius:24px;
+    padding:26px 20px 24px;text-align:left;
+  }
+  .datecard label{display:block;font-size:13px;color:var(--gold-1);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;font-weight:700;text-align:center;}
+  .date-fields{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;margin-bottom:14px;}
+  .date-fields select{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+    font-family:var(--sans);font-size:15px;padding:13px 8px;border-radius:12px;text-align:center;
+    appearance:none;-webkit-appearance:none;
+  }
+  .date-fields select:focus-visible{outline:2px solid var(--gold-1);}
+  .consent{font-size:12px;color:var(--ink-faint);margin-top:12px;line-height:1.55;text-align:center;}
+  .form-error{display:none;color:#e0a186;font-size:13px;margin-top:10px;text-align:center;}
+  .form-error.show{display:block;}
+
+  /* ---------- result ---------- */
+  #result{display:none;}
+  #result.show{display:block;}
+  .result-head{margin-bottom:6px;}
+  .result-head h2{margin-bottom:6px;}
+  .result-head .sub{font-size:15px;color:var(--ink-faint);margin-bottom:34px;}
+  .sphere-grid{display:grid;gap:16px;text-align:left;}
+  .sphere-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px 22px;
+  }
+  .sphere-card .sph-eyebrow{
+    font-size:12px;letter-spacing:.05em;color:var(--blue-acc);text-transform:uppercase;font-weight:700;margin-bottom:10px;
+  }
+  .sphere-card h3{font-size:20px;line-height:1.3;margin-bottom:12px;color:var(--gold-1);}
+  .sphere-card .scenario{font-size:15.5px;line-height:1.68;color:var(--ink-dim);margin-bottom:16px;}
+  .sphere-card .dates{
+    background:var(--panel-2);border-radius:12px;padding:12px 14px;margin-bottom:14px;display:grid;gap:8px;
+  }
+  .sphere-card .dates .d-row{font-size:14px;color:var(--ink);line-height:1.5;}
+  .sphere-card .dates .d-row .dnum{color:var(--gold-1);font-weight:700;}
+  .sphere-card .action{
+    font-size:14.5px;color:var(--ink);border-left:2px solid var(--gold-1);padding-left:12px;line-height:1.55;
+  }
+  .sphere-card .action b{color:var(--gold-1);}
+  @media (min-width:760px){ .sphere-grid{grid-template-columns:1fr 1fr;} }
+
+  /* ---------- bridge/reassurance ---------- */
+  .callout{
+    margin-top:26px;padding:22px 22px;border-radius:16px;text-align:left;
+    background:linear-gradient(135deg, rgba(227,180,148,0.14), rgba(143,180,217,0.06));
+    border:1px solid rgba(227,180,148,0.35);
+  }
+  .callout p{font-size:16px;line-height:1.65;color:var(--ink);}
+  .bridge{background:var(--panel-2);border:1px solid var(--line);padding:32px 24px;border-radius:24px;text-align:left;}
+  .bridge h2{margin-bottom:14px;font-size:23px;}
+  .bridge p{font-size:16px;}
+
+  /* ---------- course pitch ---------- */
+  .quote-block{
+    border-left:2px solid var(--gold-1);padding-left:18px;text-align:left;margin-bottom:28px;
+  }
+  .quote-block q{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--ink);line-height:1.5;display:block;margin-bottom:8px;}
+  .quote-block .qsub{font-size:13px;color:var(--ink-faint);}
+  .author-row{display:flex;align-items:center;gap:14px;text-align:left;margin-bottom:20px;}
+  .author-row .av{
+    width:56px;height:56px;border-radius:50%;flex-shrink:0;
+    background:linear-gradient(135deg, rgba(227,180,148,0.25), rgba(143,180,217,0.15));
+    border:1px solid rgba(227,180,148,0.35);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--gold-1);
+  }
+  .author-row .name{font-family:var(--serif);font-size:17px;color:var(--ink);}
+  .author-row .role{font-size:13px;color:var(--ink-faint);}
+  .program-grid{display:grid;gap:10px;margin-top:22px;text-align:left;}
+  .prog-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .prog-card .pn{font-family:var(--serif);font-size:20px;color:var(--gold-1);flex-shrink:0;width:26px;}
+  .prog-card .pt{font-size:15px;color:var(--ink);line-height:1.5;}
+  .prog-card.mark{border-color:rgba(227,180,148,0.4);background:rgba(227,180,148,0.06);}
+  .bonus-list{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px;text-align:left;}
+  .bonus-list li{
+    padding:14px 16px;background:var(--panel);border:1px solid var(--line);
+    color:var(--ink-dim);font-size:14.5px;line-height:1.5;position:relative;padding-left:36px;border-radius:12px;
+  }
+  .bonus-list li::before{content:"✓";position:absolute;left:14px;top:14px;color:var(--gold-1);font-weight:700;}
+  .format-line{font-size:15px;color:var(--gold-1);margin:18px 0 4px;font-weight:700;}
+
+  /* ---------- price ---------- */
+  .price-block{
+    text-align:center;background:var(--panel);border:1px solid rgba(227,180,148,0.25);
+    padding:38px 24px;border-radius:24px;
+  }
+  .price-block .old{font-size:16px;color:var(--ink-faint);text-decoration:line-through;margin-bottom:4px;}
+  .price-block .price{
+    font-family:var(--serif);font-size:52px;font-weight:700;
+    background:linear-gradient(135deg, var(--gold-1), var(--gold-2));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    letter-spacing:-.01em;display:block;margin-bottom:6px;
+  }
+  .price-block .under{font-size:15px;margin-bottom:22px;color:var(--ink-dim);}
+  .timer{
+    display:flex;justify-content:center;gap:8px;margin:0 auto 24px;
+  }
+  .timer .tseg{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:10px;
+    padding:10px 6px;min-width:56px;text-align:center;
+  }
+  .timer .tseg .tval{font-family:var(--serif);font-size:22px;color:var(--gold-1);display:block;font-variant-numeric:tabular-nums;}
+  .timer .tseg .tlab{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.05em;}
+  .price-sub{display:block;margin-top:14px;color:var(--ink-faint);font-size:13px;}
+
+  /* ---------- reviews ---------- */
+  .review-grid{display:grid;gap:14px;text-align:left;}
+  .review-card{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px 20px;
+  }
+  .review-card q{font-size:14.5px;line-height:1.6;color:var(--ink-dim);display:block;margin-bottom:12px;font-style:normal;}
+  .review-card .rw{display:flex;align-items:center;gap:10px;}
+  .review-card .ri{
+    width:34px;height:34px;border-radius:50%;background:var(--panel-2);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-family:var(--serif);color:var(--gold-1);font-size:14px;flex-shrink:0;
+  }
+  .review-card .rn{font-size:13.5px;color:var(--ink);font-weight:700;}
+  .review-card .rd{font-size:12px;color:var(--ink-faint);}
+  @media (min-width:760px){
+    .review-grid{grid-template-columns:1fr 1fr;}
+    .review-grid > *:last-child:nth-child(odd){grid-column:1/-1;max-width:calc(50% - 7px);margin:0 auto;}
+  }
+
+  /* ---------- services panel ---------- */
+  .svc-toggle{
+    width:100%;background:var(--panel);border:1px solid rgba(227,180,148,0.3);border-radius:16px;
+    padding:16px 20px;color:var(--ink);font-family:var(--sans);font-size:15.5px;font-weight:700;
+    cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;
+  }
+  .svc-toggle .chev{transition:transform .25s ease;color:var(--gold-1);flex-shrink:0;}
+  .svc-toggle[aria-expanded="true"] .chev{transform:rotate(180deg);}
+  .svc-panel{
+    max-height:0;overflow:hidden;transition:max-height .35s ease;
+  }
+  .svc-panel.open{max-height:2200px;}
+  .svc-inner{padding-top:16px;display:grid;gap:14px;text-align:left;}
+  .svc-card{
+    background:var(--panel-2);border:1px solid var(--line);border-radius:18px;padding:20px 20px 22px;
+    display:flex;flex-direction:column;
+  }
+  .svc-card .btn-ghost{margin-top:auto;}
+  .svc-card h3{font-size:17px;color:var(--gold-1);margin-bottom:8px;}
+  .svc-card p{font-size:14.5px;margin-bottom:16px;}
+  .tier-row{display:flex;justify-content:space-between;align-items:center;gap:10px;
+    padding:11px 0;border-top:1px solid var(--line);font-size:14px;color:var(--ink);}
+  .tier-row:first-of-type{border-top:none;}
+  .tier-row .tprice{color:var(--gold-1);font-weight:700;white-space:nowrap;}
+  @media (min-width:760px){ .svc-inner{grid-template-columns:1fr 1fr;} }
+
+  /* ---------- footer ---------- */
+  footer{padding:32px 0 48px;color:var(--ink-faint);font-size:12.5px;text-align:center;}
+  footer p{margin:0 auto;max-width:520px;color:var(--ink-faint);}
+  footer p + p{margin-top:8px;}
+  footer a{color:var(--ink-faint);text-decoration:underline;text-decoration-color:var(--line);display:inline-block;padding:11px 4px;}
+  footer .flinks{margin-top:8px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;}
+
+  /* ---------- gates (register 2->3 switch) ---------- */
+  .locked{display:none;}
+
+  /* ---------- sticky mini-cta ---------- */
+  .sticky-cta{
+    position:fixed;left:0;right:0;bottom:0;z-index:20;padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:linear-gradient(180deg, transparent, var(--bg-deep) 40%);
+    display:none;transform:translateY(100%);transition:transform .3s ease;
+  }
+  .sticky-cta.show{display:block;}
+  .sticky-cta.in{transform:translateY(0);}
+  body.sticky-active{padding-bottom:76px;}
+  .sticky-cta .inner{max-width:460px;margin:0 auto;background:var(--panel);border:1px solid rgba(227,180,148,0.3);
+    border-radius:16px;padding:10px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 -8px 30px rgba(0,0,0,.4);}
+  .sticky-cta .sp{font-size:13px;color:var(--ink);flex:1;}
+  .sticky-cta .sp b{color:var(--gold-1);}
+  .sticky-cta a.btn{padding:11px 18px;font-size:14px;width:auto;}
+</style>
+</head>
+<body>
+
+<svg class="stars" aria-hidden="true" viewBox="0 0 1000 1600" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <symbol id="sparkle" viewBox="0 0 24 24">
+      <path d="M12 0 L14.2 9.8 L24 12 L14.2 14.2 L12 24 L9.8 14.2 L0 12 L9.8 9.8 Z"/>
+    </symbol>
+  </defs>
+  <g fill="none" stroke="#e3b494" opacity=".18" stroke-width="1">
+    <ellipse cx="760" cy="220" rx="360" ry="190" transform="rotate(-16 760 220)"/>
+    <ellipse cx="180" cy="620" rx="420" ry="220" transform="rotate(12 180 620)"/>
+    <ellipse cx="820" cy="1280" rx="380" ry="200" transform="rotate(-10 820 1280)"/>
+  </g>
+  <g>
+    <use href="#sparkle" x="70" y="60" width="24" height="24" fill="#ffffff" opacity=".85"/>
+    <use href="#sparkle" x="640" y="150" width="16" height="16" fill="#e3b494" opacity=".75"/>
+    <use href="#sparkle" x="900" y="60" width="20" height="20" fill="#8fb4d9" opacity=".8"/>
+    <use href="#sparkle" x="60" y="480" width="14" height="14" fill="#ffffff" opacity=".65"/>
+    <use href="#sparkle" x="920" y="420" width="18" height="18" fill="#e3b494" opacity=".75"/>
+    <use href="#sparkle" x="80" y="1150" width="18" height="18" fill="#e3b494" opacity=".75"/>
+    <use href="#sparkle" x="880" y="1240" width="22" height="22" fill="#ffffff" opacity=".8"/>
+  </g>
+  <g fill="#ffffff" opacity=".8">
+    <circle class="tw" cx="12%" cy="8%" r="1.4"/><circle cx="30%" cy="4%" r="1"/><circle class="tw" cx="55%" cy="9%" r="1.6"/>
+    <circle cx="80%" cy="14%" r="1.2"/><circle class="tw" cx="6%" cy="30%" r="1"/><circle cx="45%" cy="26%" r="1.4"/>
+    <circle class="tw" cx="70%" cy="35%" r="1"/><circle cx="90%" cy="45%" r="1.3"/><circle class="tw" cx="20%" cy="55%" r="1"/>
+    <circle cx="60%" cy="62%" r="1.1"/><circle class="tw" cx="35%" cy="70%" r="1.3"/><circle cx="15%" cy="80%" r="1"/>
+    <circle class="tw" cx="85%" cy="85%" r="1.4"/><circle cx="50%" cy="92%" r="1"/>
+  </g>
+</svg>
+
+<header>
+  <div class="logo">✦ Астролог<span>ика</span> ✦</div>
+</header>
+
+<main>
+
+<!-- ============ 1. HERO + ФОРМА ============ -->
+<section class="hero" id="hero">
+  <div class="frame">
+    <div class="hero-layout">
+      <div class="hero-copy">
+        <div class="badge reveal in">⚡ Для тех, кто хочет понимать, а не гадать</div>
+        <h1 class="reveal in">Что реально ждёт тебя <span class="grad">в этом месяце</span> - по твоей дате рождения</h1>
+
+        <ul class="hook-list reveal in">
+          <li>Деньги придут или утекут?</li>
+          <li>Отношения - момент близости или момент конфликта?</li>
+          <li>Двигаться в новом деле сейчас или притормозить?</li>
+          <li>Здоровье - где взять ресурс, чтобы не выгореть?</li>
+        </ul>
+
+        <p class="rebut reveal in">Это не гороскоп на сегодня для всех. Расчёт по реальному положению планет на твою дату, за секунды - а не гадание на кофейной гуще</p>
+      </div>
+
+      <div class="hero-aside">
+        <div class="hero-portrait reveal in">
+          <div class="ph-frame">
+            <img src="assets/olga-hero-portrait.jpg" alt="Ольга Прядко, основатель школы астрологии Astrovegis" width="640" height="640" loading="eager">
+          </div>
+          <div class="cap"><strong>Ольга Прядко</strong> · основатель школы астрологии Astrovegis</div>
+        </div>
+
+        <form class="datecard reveal in" id="dobForm" novalidate>
+          <label for="dobDay">Твоя дата рождения</label>
+          <div class="date-fields">
+            <select id="dobDay" aria-label="День" required></select>
+            <select id="dobMonth" aria-label="Месяц" required></select>
+            <select id="dobYear" aria-label="Год" required></select>
+          </div>
+          <button type="submit" class="btn" style="width:100%;">Рассчитать мой прогноз →</button>
+          <div class="form-error" id="dobError">Проверь дату - похоже, её не существует</div>
+          <p class="consent">Нажимая «Рассчитать», ты соглашаешься с тем, что расчёт выполняется прямо в твоём браузере - дата рождения нигде не сохраняется и никуда не передаётся</p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2. РЕЗУЛЬТАТ ============ -->
+<section id="result">
+  <div class="frame wide">
+    <div class="result-head">
+      <h2 id="resultTitle">Твой прогноз</h2>
+      <p class="sub" id="resultSub"></p>
+    </div>
+    <div class="sphere-grid" id="sphereGrid"></div>
+  </div>
+</section>
+
+<!-- ============ 3. ЗАБОТА-МОСТИК ============ -->
+<section class="locked" id="reassurance">
+  <div class="frame">
+    <div class="callout reveal">
+      <p id="reassureText"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. МОСТИК-ЛЮБОПЫТСТВО ============ -->
+<section class="locked" id="bridge">
+  <div class="frame">
+    <div class="bridge reveal">
+      <h2>Это посчитал твой прогноз. А что, если ты сможешь видеть это сама?</h2>
+      <p>То, что ты только что получила - реальный расчёт по положению планет на твою дату, а не разовая подсказка. Но твой прогноз считает только <strong>текущий</strong> месяц. Курс «Сам себе астролог» учит считать <strong>любой</strong> период - не только себе, но и своим родным и близким. Этому можно научиться, как учатся считать хорар или читать натальную карту. Тогда не придётся ждать месяц следующего прогноза - ты сама увидишь свои периоды, для любой сферы, в любой момент, для себя и для тех, кто рядом</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 5. ПИТЧ КУРСА ============ -->
+<section class="locked" id="pitch">
+  <div class="frame">
+    <div class="eyebrow reveal">Сам себе астролог</div>
+    <h2 class="reveal">Мини-курс, который научит тебя видеть это самой</h2>
+
+    <div class="quote-block reveal">
+      <q>«Миллионеры не пользуются астрологией - ей пользуются миллиардеры»</q>
+      <span class="qsub">Джон Пирпонт Морган · это чистая математика судьбы, а не гадание на кофейной гуще</span>
+    </div>
+
+    <div class="author-row reveal">
+      <div class="av">☉</div>
+      <div>
+        <div class="name">Ольга Прядко</div>
+        <div class="role">основатель школы астрологии Astrovegis · более 1000 выпускников</div>
+      </div>
+    </div>
+
+    <div class="section-body reveal" style="text-align:left;">
+      <p>Из своего опыта я убрала всё лишнее - сложную теорию, занудство, воду - и собрала мини-курс «Сам себе астролог». Внутри - точная система, которая покажет всё конкретно про ТЕБЯ: второго человека с таким же набором планет на Земле просто нет</p>
+    </div>
+    <p class="format-line reveal">7 коротких уроков. Смотришь за 1-2 вечера</p>
+
+    <div class="program-grid reveal">
+      <div class="prog-card"><div class="pn">01</div><div class="pt">Твоя личность - распаковка твоих сильных сторон и истинных талантов</div></div>
+      <div class="prog-card"><div class="pn">02</div><div class="pt">Деньги и богатство - где зашиты твои личные финансовые хабы, как активировать точку роста и почему деньги утекают сквозь пальцы</div></div>
+      <div class="prog-card"><div class="pn">03</div><div class="pt">Отношения и любовь - как читать близких и гасить конфликты до того, как они начались</div></div>
+      <div class="prog-card"><div class="pn">04</div><div class="pt">Дети и их потенциал - скрытые таланты ребёнка, куда его направлять, чтобы не ломать характер</div></div>
+      <div class="prog-card mark"><div class="pn">05</div><div class="pt"><strong>Прогнозы и периоды</strong> - то, что ты только что увидела в бесплатном расчёте, здесь ты научишься делать сама, для любого периода и любой сферы</div></div>
+      <div class="prog-card"><div class="pn">06</div><div class="pt">Здоровье и энергия - где брать ресурс и как не выгорать</div></div>
+      <div class="prog-card"><div class="pn">07</div><div class="pt">Предназначение - твоя главная задача на эту жизнь</div></div>
+    </div>
+
+    <ul class="bonus-list reveal">
+      <li>Бонусные материалы и вебинары, актуальные на этот год</li>
+      <li>Доступ к урокам 6 месяцев - пересматривай, когда нужно</li>
+      <li>Платформа GetCourse - смотри с телефона или ноутбука из любой точки</li>
+      <li>Скидка 5% на любые другие курсы школы «Астрологика»</li>
+      <li>Доступ в закрытый канал «Секретная астрология» с живыми практиками</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 6. ЦЕНА / ТАЙМЕР ============ -->
+<section class="locked" id="price">
+  <div class="frame">
+    <div class="price-block reveal">
+      <div class="old">Обычно этот курс в моей школе стоит 24 990₽</div>
+      <span class="price" id="priceMain">990₽</span>
+      <p class="under" id="priceUnder">Но раз ты только что получила свой расчёт - для тебя эта цена, пока не истечёт таймер</p>
+
+      <div class="timer" id="timerBox" aria-live="polite">
+        <div class="tseg"><span class="tval" id="tH">00</span><span class="tlab">часы</span></div>
+        <div class="tseg"><span class="tval" id="tM">00</span><span class="tlab">мин</span></div>
+        <div class="tseg"><span class="tval" id="tS">00</span><span class="tlab">сек</span></div>
+      </div>
+
+      <a class="btn" href="https://academy.astrovegis.ru/page167" target="_blank" rel="noopener" id="ctaCourse">Забрать все 7 уроков →</a>
+      <span class="price-sub">Сразу после оплаты - доступ в закрытый чат с материалами</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7. ОТЗЫВЫ ============ -->
+<section class="locked" id="reviews">
+  <div class="frame wide">
+    <h2 class="reveal">Что говорят те, кто уже учился у Ольги</h2>
+    <div class="review-grid reveal">
+      <div class="review-card">
+        <q>Один восторг, я давно мечтала об этом курсе, ни разу не пожалела... знания которые так щедро дарила нам Ольга Прядко</q>
+        <div class="rw"><div class="ri">К</div><div><div class="rn">Коштуля</div></div></div>
+      </div>
+      <div class="review-card">
+        <q>Отличный курс, в голове все по полочкам улеглось, вдохновили идти и заниматься дальше</q>
+        <div class="rw"><div class="ri">Т</div><div><div class="rn">Татьяна Сальникова</div></div></div>
+      </div>
+      <div class="review-card">
+        <q>Вы из тех преподавателей, кто щедро и с любовью учит своему делу</q>
+        <div class="rw"><div class="ri">В</div><div><div class="rn">Виктория Михайлова</div><div class="rd">5 августа 2025</div></div></div>
+      </div>
+      <div class="review-card">
+        <q>Огромнейшее спасибо всем и лично нашему куратору Ольге за шикарнейший курс</q>
+        <div class="rw"><div class="ri">Е</div><div><div class="rn">Елена</div></div></div>
+      </div>
+      <div class="review-card">
+        <q>Благодарность нашему преподавателю Оленьке за познавательный, обучающий курс</q>
+        <div class="rw"><div class="ri">Т</div><div><div class="rn">Татьяна Татьяна</div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8. РАЗВИЛКА - УСЛУГИ ============ -->
+<section class="locked" id="services">
+  <div class="frame wide">
+    <h2 class="reveal">Не хочешь разбираться сама? Закажи готовый разбор у профессионала</h2>
+    <p class="reveal" style="margin-bottom:24px;">Ольга сделает расчёт лично, за тебя - выбери, что нужно</p>
+
+    <button class="svc-toggle reveal" id="svcToggle" aria-expanded="false" aria-controls="svcPanel">
+      <span>Показать услуги и цены</span>
+      <span class="chev">▾</span>
+    </button>
+
+    <div class="svc-panel" id="svcPanel">
+      <div class="svc-inner">
+        <div class="svc-card">
+          <h3>Личный прогноз от Ольги</h3>
+          <p>Ольга лично считает твой расклад - не автоматика, а её реальный разбор по твоей дате рождения</p>
+          <div class="tier-row"><span>1 сфера на месяц</span><span class="tprice">500₽</span></div>
+          <div class="tier-row"><span>все 4 сферы на месяц</span><span class="tprice">1 990₽</span></div>
+          <div class="tier-row"><span>весь год по всем сферам</span><span class="tprice">12 000₽</span></div>
+          <a class="btn-ghost" style="margin-top:16px;" href="https://t.me/komanda_sreda?text=%D0%9F%D0%9E%D0%9B%D0%9D%D0%AB%D0%99%20%D0%9F%D0%A0%D0%9E%D0%93%D0%9D%D0%9E%D0%97%201%20990%E2%82%BD" target="_blank" rel="noopener">Заказать личный прогноз →</a>
+        </div>
+        <div class="svc-card">
+          <h3>Хорарная консультация</h3>
+          <p>У тебя есть конкретный вопрос - Ольга отвечает лично, без общих формулировок</p>
+          <div class="tier-row"><span>1 вопрос</span><span class="tprice">2 990₽</span></div>
+          <div class="tier-row"><span>3 вопроса</span><span class="tprice">4 990₽</span></div>
+          <a class="btn-ghost" style="margin-top:16px;" href="https://t.me/komanda_sreda?text=%D0%A5%D0%9E%D0%A0%D0%90%D0%A0%201%20%D0%B2%D0%BE%D0%BF%D1%80%D0%BE%D1%81%20%E2%80%94%202%20990%E2%82%BD" target="_blank" rel="noopener">Задать вопрос Ольге →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9. МЯГКАЯ АЛЬТЕРНАТИВА ============ -->
+<section class="locked" id="soft-alt">
+  <div class="frame">
+    <h2 class="reveal">Не готова решать прямо сейчас?</h2>
+    <p class="reveal" style="margin-bottom:26px;">Присмотрись, ничего не теряешь. Возвращайся в канал Ольги - там она сама разбирает реальные периоды и делится тем, что не поместилось в этот расчёт</p>
+    <a class="btn-ghost reveal" href="https://t.me/astrolog_pryadko" target="_blank" rel="noopener">Вернуться в канал →</a>
+  </div>
+</section>
+
+<!-- ============ 10. ЧЕЛОВЕЧЕСКИЙ FALLBACK ============ -->
+<section class="locked" id="fallback">
+  <div class="frame">
+    <p class="reveal" style="margin-bottom:20px;">Что-то не так или остался вопрос? Просто напиши Ольге</p>
+    <a class="btn reveal" href="https://t.me/astrolog_pryadko" target="_blank" rel="noopener">Есть вопрос - пиши Ольге →</a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>Расчёт прогноза выполняется локально в твоём браузере на основе стандартных положений планет - дата рождения нигде не сохраняется и не передаётся на сервер.</p>
+  <p>Оплата и доставка курса «Сам себе астролог» - через официальную платформу academy.astrovegis.ru. Услуги (личный прогноз, хорарная консультация) оформляются напрямую в переписке с Ольгой в Telegram.</p>
+  <p>© Astrovegis · Ольга Прядко, школа астрологии</p>
+  <div class="flinks">
+    <a href="https://t.me/astrolog_pryadko" target="_blank" rel="noopener">Telegram-канал</a>
+    <a href="oferta.html">Публичная оферта</a>
+    <a href="privacy.html">Политика конфиденциальности</a>
+  </div>
+</footer>
+
+<div class="sticky-cta" id="stickyCta">
+  <div class="inner">
+    <div class="sp">Курс со скидкой - <b id="stickyPrice">990₽</b></div>
+    <a class="btn" href="https://academy.astrovegis.ru/page167" target="_blank" rel="noopener">Забрать →</a>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* =========================================================================
+   ЧАСТЬ 1 - ЭФЕМЕРИДНЫЙ ДВИЖОК (упрощённые орбитальные элементы, метод Paul
+   Schlyter, epoch J2000; точность ~1 угловая минута - достаточно для
+   определения знака/ретроградности на десятилетия вперёд). Никаких
+   выдуманных данных - реальная небесная механика в браузере.
+   ========================================================================= */
+  var RAD = Math.PI/180;
+
+  function rev(x){ x = x - Math.floor(x/360)*360; return x<0? x+360 : x; }
+
+  // дней с 2000-01-00.0 UT (эпоха Schlyter)
+  function daysSinceEpoch(date){
+    var y=date.getUTCFullYear(), m=date.getUTCMonth()+1,
+        d=date.getUTCDate() + (date.getUTCHours() + date.getUTCMinutes()/60)/24;
+    return 367*y - Math.floor(7*(y+Math.floor((m+9)/12))/4) + Math.floor(275*m/9) + d - 730530;
+  }
+
+  function eccAnomaly(Mdeg, e){
+    var M = rev(Mdeg)*RAD;
+    var E = M + e*Math.sin(M)*(1+e*Math.cos(M));
+    for (var i=0;i<8;i++){
+      var dE = (E - e*Math.sin(E) - M) / (1 - e*Math.cos(E));
+      E -= dE;
+      if (Math.abs(dE) < 1e-7) break;
+    }
+    return E; // радианы
+  }
+
+  // орбитальные элементы (град, град/сутки применяется через d) - Schlyter, эпоха 2000.0
+  var ELEMENTS = {
+    sun:     function(d){ return {N:0, i:0, w: rev(282.9404 + 4.70935e-5*d), a:1.000000, e: 0.016709 - 1.151e-9*d, M: rev(356.0470 + 0.9856002585*d)}; },
+    moon:    function(d){ return {N: rev(125.1228 - 0.0529538083*d), i:5.1454, w: rev(318.0634 + 0.1643573223*d), a:60.2666, e:0.054900, M: rev(115.3654 + 13.0649929509*d)}; },
+    mercury: function(d){ return {N: rev(48.3313 + 3.24587e-5*d), i: 7.0047 + 5.00e-8*d, w: rev(29.1241 + 1.01444e-5*d), a:0.387098, e:0.205635 + 5.59e-10*d, M: rev(168.6562 + 4.0923344368*d)}; },
+    venus:   function(d){ return {N: rev(76.6799 + 2.46590e-5*d), i: 3.3946 + 2.75e-8*d, w: rev(54.8910 + 1.38374e-5*d), a:0.723330, e:0.006773 - 1.302e-9*d, M: rev(48.0052 + 1.6021302244*d)}; },
+    mars:    function(d){ return {N: rev(49.5574 + 2.11081e-5*d), i: 1.8497 - 1.78e-8*d, w: rev(286.5016 + 2.92961e-5*d), a:1.523688, e:0.093405 + 2.516e-9*d, M: rev(18.6021 + 0.5240207766*d)}; },
+    jupiter: function(d){ return {N: rev(100.4542 + 2.76854e-5*d), i: 1.3030 - 1.557e-7*d, w: rev(273.8777 + 1.64505e-5*d), a:5.20256, e:0.048498 + 4.469e-9*d, M: rev(19.8950 + 0.0830853001*d)}; },
+    saturn:  function(d){ return {N: rev(113.6634 + 2.38980e-5*d), i: 2.4886 - 1.081e-7*d, w: rev(339.3939 + 2.97661e-5*d), a:9.55475, e:0.055546 - 9.499e-9*d, M: rev(316.9670 + 0.0334442282*d)}; }
+  };
+
+  function orbitalToEcliptic(el){
+    var E = eccAnomaly(el.M, el.e);
+    var xv = el.a*(Math.cos(E) - el.e);
+    var yv = el.a*(Math.sqrt(1-el.e*el.e)*Math.sin(E));
+    var v = rev(Math.atan2(yv,xv)/RAD);
+    var r = Math.sqrt(xv*xv+yv*yv);
+    var Nr=el.N*RAD, ir=el.i*RAD, vwr=(v+el.w)*RAD;
+    var xh = r*(Math.cos(Nr)*Math.cos(vwr) - Math.sin(Nr)*Math.sin(vwr)*Math.cos(ir));
+    var yh = r*(Math.sin(Nr)*Math.cos(vwr) + Math.cos(Nr)*Math.sin(vwr)*Math.cos(ir));
+    var zh = r*(Math.sin(vwr)*Math.sin(ir));
+    return {x:xh,y:yh,z:zh,r:r};
+  }
+
+  // геоцентрическая эклиптическая долгота (град, 0-360) планеты/Солнца/Луны на дату
+  function geoLongitude(planet, date){
+    var d = daysSinceEpoch(date);
+    var sunEl = ELEMENTS.sun(d);
+    var sunPos = orbitalToEcliptic(sunEl); // = позиция Солнца относительно Земли (i=0 у элементов Солнца)
+    if (planet === 'sun') return rev(Math.atan2(sunPos.y, sunPos.x)/RAD);
+    if (planet === 'moon'){
+      var m = orbitalToEcliptic(ELEMENTS.moon(d));
+      return rev(Math.atan2(m.y, m.x)/RAD);
+    }
+    var p = orbitalToEcliptic(ELEMENTS[planet](d));
+    // геоцентрич. = гелиоцентрич.планеты + гелиоцентрич.Земли(= позиция Солнца от Земли)
+    var xg = p.x + sunPos.x, yg = p.y + sunPos.y;
+    return rev(Math.atan2(yg,xg)/RAD);
+  }
+
+  var SIGNS = ["Овен","Телец","Близнецы","Рак","Лев","Дева","Весы","Скорпион","Стрелец","Козерог","Водолей","Рыбы"];
+  var SIGN_GEN = ["Овна","Тельца","Близнецов","Рака","Льва","Девы","Весов","Скорпиона","Стрельца","Козерога","Водолея","Рыб"]; // родительный падеж "в знаке Х"
+  var SIGN_LOC = ["Овне","Тельце","Близнецах","Раке","Льве","Деве","Весах","Скорпионе","Стрельце","Козероге","Водолее","Рыбах"]; // предложный "в Х"
+
+  function signIndex(lon){ return Math.floor(rev(lon)/30) % 12; }
+
+  function isRetrograde(planet, date){
+    var d1 = new Date(date.getTime() - 36*3600*1000);
+    var d2 = new Date(date.getTime() + 36*3600*1000);
+    var l1 = geoLongitude(planet, d1), l2 = geoLongitude(planet, d2);
+    var delta = l2 - l1;
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+    return delta < 0;
+  }
+
+  // знак рождения (тропический, по календарной дате - стандартная астрологическая конвенция)
+  var SUN_SIGN_RANGES = [
+    [1,20,2,18,"Водолей"], [2,19,3,20,"Рыбы"], [3,21,4,19,"Овен"], [4,20,5,20,"Телец"],
+    [5,21,6,20,"Близнецы"], [6,21,7,22,"Рак"], [7,23,8,22,"Лев"], [8,23,9,22,"Дева"],
+    [9,23,10,22,"Весы"], [10,23,11,21,"Скорпион"], [11,22,12,21,"Стрелец"], [12,22,1,19,"Козерог"]
+  ];
+  function sunSignFromDate(day, month){
+    for (var i=0;i<SUN_SIGN_RANGES.length;i++){
+      var r = SUN_SIGN_RANGES[i];
+      var afterStart = (month===r[0] && day>=r[1]) || (month>r[0] && r[0]<r[2]);
+      var beforeEnd = (month===r[2] && day<=r[3]);
+      if (r[0] < r[2]){
+        if ((month===r[0] && day>=r[1]) || (month>r[0] && month<r[2]) || (month===r[2] && day<=r[3])) return SIGNS.indexOf(r[4]);
+      } else { // диапазон через новый год (Козерог)
+        if ((month===r[0] && day>=r[1]) || (month===r[2] && day<=r[3])) return SIGNS.indexOf(r[4]);
+      }
+    }
+    return 0;
+  }
+
+  // сканирование месяца: найти дату(ы) входа планеты в новый знак и станции ретроградности
+  function scanMonthEvents(planet, year, month){
+    var events = []; // {day, type:'ingress'|'stationR'|'stationD', sign}
+    var daysInMonth = new Date(year, month+1, 0).getDate();
+    var prevSign = null, prevRetro = null;
+    for (var day=1; day<=daysInMonth+1; day++){
+      var dt = new Date(Date.UTC(year, month, Math.min(day,daysInMonth), 12, 0, 0));
+      var lon = geoLongitude(planet, dt);
+      var sg = signIndex(lon);
+      var rt = isRetrograde(planet, dt);
+      if (prevSign !== null && sg !== prevSign && day<=daysInMonth) events.push({day:day, type:'ingress', sign:sg});
+      if (prevRetro !== null && rt !== prevRetro && day<=daysInMonth) events.push({day:day, type: rt? 'stationR':'stationD', sign:sg});
+      prevSign = sg; prevRetro = rt;
+    }
+    return events;
+  }
+
+  // дни месяца, когда Луна образует нужный канонический аспект (0..6) к знаку userSignIdx
+  function moonAspectDays(year, month, userSignIdx, wantCanonical, limit){
+    var res = [];
+    var daysInMonth = new Date(year, month+1, 0).getDate();
+    for (var day=1; day<=daysInMonth && res.length<limit; day++){
+      var dt = new Date(Date.UTC(year, month, day, 12, 0, 0));
+      var lon = geoLongitude('moon', dt);
+      var sg = signIndex(lon);
+      var offset = (sg - userSignIdx + 12) % 12;
+      var canonical = Math.min(offset, 12-offset);
+      if (wantCanonical.indexOf(canonical) !== -1) res.push(day);
+    }
+    return res;
+  }
+
+  function canonicalOffset(signA, signB){
+    var offset = (signA - signB + 12) % 12;
+    return Math.min(offset, 12-offset);
+  }
+
+/* =========================================================================
+   ЧАСТЬ 2 - КОНТЕНТ-ДВИЖОК (шаблоны голоса Ольги: сценарий-абзац по
+   реальной механике аспекта -> датированные точки -> микродействие).
+   ========================================================================= */
+
+  var MONTHS_NOM = ["январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"];
+  var MONTHS_GEN = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+
+  var PLANET_NAME = {venus:"Венера", mars:"Марс", jupiter:"Юпитер", saturn:"Сатурн", mercury:"Меркурий"};
+  var PLANET_GEN  = {venus:"Венеры", mars:"Марса", jupiter:"Юпитера", saturn:"Сатурна", mercury:"Меркурия"};
+  var PLANET_DAT  = {venus:"Венере", mars:"Марсу", jupiter:"Юпитеру", saturn:"Сатурну", mercury:"Меркурию"};
+  var PLANET_RETRO_DAT = {venus:"ретроградной", mars:"ретроградному", jupiter:"ретроградному", saturn:"ретроградному", mercury:"ретроградному"};
+
+  // 0 conjunction, 1 semisextile, 2 sextile, 3 square, 4 trine, 5 quincunx, 6 opposition
+  // все глаголы в настоящем времени намеренно (в прошедшем времени в русском есть род - "перешла/перешёл" -
+  // а планеты бывают и мужского, и женского рода, шаблон должен работать для любой)
+  var CONNECTOR = {
+    0: function(pn,sg){ return pn+" сейчас стоит в твоём собственном знаке, в "+SIGN_LOC[sg]+" - это не фон, а прямое попадание: то, что поднимается сейчас, ты почувствуешь на себе, без смягчения."; },
+    1: function(pn,sg){ return pn+" сейчас в "+SIGN_LOC[sg]+" - знак, который слегка не совпадает по ритму с твоим. Ничего критичного, но привычные схемы сейчас будут спотыкаться на мелочах, и это раздражает больше, чем должно."; },
+    2: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" открывает лёгкое окно возможностей - оно не свалится само, но если сделать первый шаг, сработает быстрее, чем обычно."; },
+    3: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" встаёт в квадрат к твоему знаку - это трение, и оно реальное. Именно оно и двигает: то, что стояло на месте месяцами, начнёт требовать решения именно сейчас."; },
+    4: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" идёт трином к твоему знаку - поддержка приходит сама, почти без усилий. Риск ровно один - расслабиться и упустить этот момент, пока он есть."; },
+    5: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" создаёт рассинхрон: логика этого месяца и твоя обычная логика тянут в разные стороны. Придётся выбирать, а не пытаться усидеть на двух стульях."; },
+    6: function(pn,sg){ return pn+" в "+SIGN_LOC[sg]+" - ровно напротив твоего знака. Это зеркало, не атака: то, что раздражает в других сейчас, стоит проверить в себе. Баланс, а не победа одной стороны."; }
+  };
+
+  var VALENCE_HARD = {0:1,3:1,5:1,6:1}; // трудные канонические типы
+  var VALENCE_EASY = {1:1,2:1,4:1};
+
+  var SPHERES = [
+    { key:"money", title:"Деньги", base:"jupiter", retroClause:"mercury",
+      lead: function(hard){ return hard
+        ? "В деньгах это читается прямо: искушение поддаться финансовым иллюзиям, ввязаться в то, что выглядит быстрым, а на деле не проверено."
+        : "В деньгах это читается как окно: не шальные деньги с неба, а реальная возможность закрыть то, что давно откладывала."; },
+      microHard: "Не подписывай и не переводи ничего крупного в порыве - выжди сутки, перепроверь договор и зафиксируй только то, что уже реально твоё.",
+      microEasy: "Сделай тот звонок или тот запрос по деньгам, который откладывала - сейчас момент, когда его услышат быстрее.",
+      moonAspects:[3,9], moonLabel: hardLabel("осторожнее с деньгами"), moonLabelEasy: null
+    },
+    { key:"relationships", title:"Отношения", base:"venus", retroClause:"mars",
+      lead: function(hard){ return hard
+        ? "В отношениях это ощущается как трение на пустом месте - конфликт из-за того, что раньше проходило мимо. Дело не в человеке напротив, а в том, что энергия месяца обостряет реакции."
+        : "В отношениях это ощущается как тепло, которое приходит само - близость, разговор без напряжения, момент, когда легче услышать и услышать себя."; },
+      microHard: "Отложи выяснение отношений на день, когда спадёт напряжение - сказанное сейчас запомнится дольше, чем стоит того.",
+      microEasy: "Не жди повода - напиши или предложи встречу первой, сейчас это примут теплее обычного.",
+      moonAspects:[6], moonAspectsEasy:[0]
+    },
+    { key:"career", title:"Карьера и дело", base:"mars", retroClause:"saturn",
+      lead: function(hard){ return hard
+        ? "В деле это давление - планы буксуют, согласования тянутся, начальство или партнёры не торопятся с ответом. Это не значит, что идея плохая - значит, момент требует пересборки, а не отчаяния."
+        : "В деле это ход вперёд - энергия, которая двигает задачи, застрявшие неделями. То, что раньше требовало трёх попыток, сейчас получится с первой."; },
+      microHard: "Не дави на людей и не форсируй запуск на этой неделе - пересмотри план, убери лишний шаг, вернись к делу через пару дней с ясной головой.",
+      microEasy: "Запускай, пиши, предлагай - именно сейчас это дело сдвинется быстрее, чем в спокойный месяц.",
+      moonAspects:[3], moonAspectsEasy:[2,4]
+    },
+    { key:"health", title:"Здоровье", base:"saturn", retroClause:"mars",
+      lead: function(hard){ return hard
+        ? "В теле это выражается как усталость, которая не проходит от одного выходного - организм требует не рывка, а системы: сна, режима, меньше нагрузки на нервы."
+        : "В теле это выражается как ресурс, который наконец начинает восстанавливаться - если дать себе движение и воздух, а не только отдых лёжа."; },
+      microHard: "Сократи нагрузку на эту неделю сознательно - выбери сон и режим вместо ещё одной задачи, тело сейчас не обманешь.",
+      microEasy: "Добавь одну спокойную физическую практику в эти дни - прогулку, растяжку, бассейн - тело сейчас откликается быстро.",
+      moonAspects:[3], moonAspectsEasy:[4]
+    }
+  ];
+  function hardLabel(t){ return t; }
+
+  var RETRO_CLAUSE = {
+    mercury: " Добавь к этому - Меркурий в этом месяце ретрограден: любые договорённости, переводы и обещания перепроверяй дважды, прежде чем на них полагаться.",
+    mars: " И ещё - Марс в этом месяце ретрограден: старые конфликты и старые проекты имеют шанс всплыть заново, но начинать что-то принципиально новое сейчас не время.",
+    saturn: " И ещё - Сатурн в этом месяце ретрограден: это время пересмотра обязательств и договорённостей, а не время брать новые."
+  };
+
+  var REASSURE_NEGATIVE = "Узнала себя в чём-то из этого? Это не приговор и не твоя вина - это сигнал. Энергия периода работает так, пока ты не начнёшь действовать иначе";
+  var REASSURE_POSITIVE = "Хороший расклад - но энергия периода меняется, и дальше будет другой рисунок. Лучше разобраться в нём заранее, чем потом наверстывать";
+
+  function ordAspectWord(day, monthGen){ return day + " " + monthGen; }
+
+  function buildSphere(sphere, userSignIdx, year, month){
+    var refDate = new Date(Date.UTC(year, month, 15, 12,0,0));
+    var lon = geoLongitude(sphere.base, refDate);
+    var baseSign = signIndex(lon);
+    var canonical = canonicalOffset(baseSign, userSignIdx);
+    var hard = !!VALENCE_HARD[canonical];
+    var planetName = PLANET_NAME[sphere.base];
+
+    var scenario = CONNECTOR[canonical](planetName, baseSign) + " " + sphere.lead(hard);
+
+    var baseRetro = isRetrograde(sphere.base, refDate);
+    if (sphere.retroClause && isRetrograde(sphere.retroClause, refDate)){
+      scenario += RETRO_CLAUSE[sphere.retroClause];
+    }
+
+    // датированные точки: сначала реальный ingress/станция базовой планеты в этом месяце, потом дни Луны
+    var dated = [];
+    var baseEvents = scanMonthEvents(sphere.base, year, month);
+    baseEvents.forEach(function(ev){
+      if (ev.type==='ingress'){
+        dated.push({day:ev.day, text: planetName+" входит в "+SIGN_GEN[ev.sign]+" - тон сферы на остаток месяца меняется, обрати внимание на день перехода."});
+      } else if (ev.type==='stationR'){
+        dated.push({day:ev.day, text: planetName+" останавливается и уходит в ретроград - день, когда стоит зафиксировать текущее положение дел, а не начинать новое."});
+      } else if (ev.type==='stationD'){
+        dated.push({day:ev.day, text: planetName+" выходит из ретроградности и идёт вперёд - хороший день, чтобы возобновить то, что стояло на паузе."});
+      }
+    });
+    var wantAspects = hard ? sphere.moonAspects : (sphere.moonAspectsEasy || sphere.moonAspects);
+    var moonDays = moonAspectDays(year, month, userSignIdx, wantAspects, 2);
+    var moonTextHardVariants = [
+      "Луна проходит через напряжённую точку к твоему знаку - день эмоционально острый, решения лучше не принимать с утра.",
+      "Ещё один напряжённый лунный день - раздражительность копится, лучше не выяснять отношения и не решать важное именно сегодня."
+    ];
+    var moonTextEasyVariants = [
+      "Луна проходит через гармоничную точку к твоему знаку - день, когда легче договориться и легче действовать.",
+      "Ещё один лёгкий лунный день - хорошее время повторить попытку или закрепить то, что начала раньше."
+    ];
+    moonDays.forEach(function(day, idx){
+      var variants = hard ? moonTextHardVariants : moonTextEasyVariants;
+      dated.push({day:day, text: variants[idx % variants.length]});
+    });
+    dated.sort(function(a,b){ return a.day-b.day; });
+    dated = dated.slice(0,3);
+    if (dated.length===0){
+      dated.push({day:15, text: planetName+" весь месяц остаётся в "+SIGN_LOC[baseSign]+" без резких переходов - ровный фон, без скачков."});
+    }
+
+    var micro = hard ? sphere.microHard : sphere.microEasy;
+
+    return {
+      key: sphere.key, title: sphere.title, planetName: planetName, sign: SIGNS[baseSign],
+      eyebrow: "по " + PLANET_DAT[sphere.base] + (baseRetro? " ("+PLANET_RETRO_DAT[sphere.base]+")":"") + " в " + SIGN_LOC[baseSign],
+      headline: hard ? (sphere.title+": месяц требует внимания") : (sphere.title+": месяц работает на тебя"),
+      scenario: scenario, dated: dated, micro: micro, hard: hard
+    };
+  }
+
+  function monthGenName(month){ return MONTHS_GEN[month]; }
+
+/* =========================================================================
+   ЧАСТЬ 3 - DOM / ИНТЕРАКЦИИ
+   ========================================================================= */
+  var dobDay = document.getElementById('dobDay'),
+      dobMonth = document.getElementById('dobMonth'),
+      dobYear = document.getElementById('dobYear'),
+      dobForm = document.getElementById('dobForm'),
+      dobError = document.getElementById('dobError');
+
+  for (var d=1; d<=31; d++){ var o=document.createElement('option'); o.value=d; o.textContent=d; dobDay.appendChild(o); }
+  var MONTH_LABELS = ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"];
+  MONTH_LABELS.forEach(function(name, idx){ var o=document.createElement('option'); o.value=idx+1; o.textContent=name; dobMonth.appendChild(o); });
+  var nowY = new Date().getFullYear();
+  for (var y=nowY; y>=nowY-95; y--){ var oy=document.createElement('option'); oy.value=y; oy.textContent=y; dobYear.appendChild(oy); }
+  dobDay.value = 15; dobMonth.value = 6; dobYear.value = nowY-28;
+
+  function daysInMonth(m,y){ return new Date(y, m, 0).getDate(); }
+
+  dobForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    var day = parseInt(dobDay.value,10), month = parseInt(dobMonth.value,10), year = parseInt(dobYear.value,10);
+    if (day < 1 || day > daysInMonth(month, year)){
+      dobError.classList.add('show');
+      return;
+    }
+    dobError.classList.remove('show');
+    runCalculation(day, month-1, year);
+  });
+
+  function runCalculation(bDay, bMonth, bYear){
+    var userSignIdx = sunSignFromDate(bDay, bMonth+1);
+    var userSign = SIGNS[userSignIdx];
+
+    var now = new Date();
+    var curYear = now.getFullYear(), curMonth = now.getMonth();
+
+    document.getElementById('resultTitle').textContent = "Твой прогноз на " + MONTHS_NOM[curMonth] + " " + curYear;
+    document.getElementById('resultSub').textContent = userSign + " · дата рождения " + bDay + "." + String(bMonth+1).padStart(2,'0') + "." + bYear;
+
+    var monthGen = monthGenName(curMonth);
+    var grid = document.getElementById('sphereGrid');
+    grid.innerHTML = '';
+    var anyHard = false, anyPositive = false;
+
+    SPHERES.forEach(function(sphere){
+      var res = buildSphere(sphere, userSignIdx, curYear, curMonth);
+      if (res.hard) anyHard = true; else anyPositive = true;
+      var card = document.createElement('div');
+      card.className = 'sphere-card reveal';
+      var datesHtml = res.dated.map(function(dd){
+        return '<div class="d-row"><span class="dnum">'+dd.day+' '+monthGen+'</span> - '+dd.text+'</div>';
+      }).join('');
+      card.innerHTML =
+        '<div class="sph-eyebrow">'+res.eyebrow+'</div>' +
+        '<h3>'+res.headline+'</h3>' +
+        '<p class="scenario">'+res.scenario+'</p>' +
+        '<div class="dates">'+datesHtml+'</div>' +
+        '<p class="action"><b>Микродействие:</b> '+res.micro+'</p>';
+      grid.appendChild(card);
+    });
+
+    document.getElementById('reassureText').textContent = anyHard ? REASSURE_NEGATIVE : REASSURE_POSITIVE;
+
+    document.getElementById('result').classList.add('show');
+    document.querySelectorAll('.locked').forEach(function(sec){ sec.classList.remove('locked'); });
+
+    startPersonalTimer();
+    observeReveals();
+
+    requestAnimationFrame(function(){
+      document.getElementById('result').scrollIntoView({behavior:'smooth', block:'start'});
+    });
+
+    try{ localStorage.setItem('prognoz_done','1'); }catch(err){}
+  }
+
+  /* ---------- личный таймер (localStorage, без сервера) ----------
+     Длительность окна не зафиксирована продюсером в каноне (copy.md: "на [N] часа").
+     Инженерный дефолт 48 часов - подтвердить у продюсера отдельно. */
+  var PROMO_WINDOW_MS = 48*3600*1000;
+  var timerInterval = null;
+
+  function startPersonalTimer(){
+    var deadline;
+    try{
+      var stored = localStorage.getItem('prognoz_deadline');
+      if (stored){ deadline = parseInt(stored,10); }
+      else { deadline = Date.now() + PROMO_WINDOW_MS; localStorage.setItem('prognoz_deadline', String(deadline)); }
+    }catch(err){ deadline = Date.now() + PROMO_WINDOW_MS; }
+
+    function tick(){
+      var left = deadline - Date.now();
+      if (left <= 0){
+        clearInterval(timerInterval);
+        setExpiredPrice();
+        return;
+      }
+      var h = Math.floor(left/3600000);
+      var m = Math.floor((left%3600000)/60000);
+      var s = Math.floor((left%60000)/1000);
+      document.getElementById('tH').textContent = String(h).padStart(2,'0');
+      document.getElementById('tM').textContent = String(m).padStart(2,'0');
+      document.getElementById('tS').textContent = String(s).padStart(2,'0');
+    }
+    tick();
+    timerInterval = setInterval(tick, 1000);
+
+    if (deadline - Date.now() <= 0) setExpiredPrice();
+
+    var sticky = document.getElementById('stickyCta');
+    var pastPrice = false, reachedEnd = false;
+    function applyStickyState(){
+      var shouldShow = pastPrice && !reachedEnd;
+      if (shouldShow){
+        sticky.classList.add('show');
+        document.body.classList.add('sticky-active');
+        requestAnimationFrame(function(){ sticky.classList.add('in'); });
+      } else {
+        sticky.classList.remove('in');
+        document.body.classList.remove('sticky-active');
+      }
+    }
+    if ('IntersectionObserver' in window){
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){ pastPrice = entry.boundingClientRect.top < 0; applyStickyState(); });
+      }, {threshold:0}).observe(document.getElementById('price'));
+      // финальный блок уже виден - убрать плавающий дубль CTA
+      new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){ reachedEnd = entry.isIntersecting; applyStickyState(); });
+      }, {threshold:0.15}).observe(document.getElementById('fallback'));
+    } else {
+      window.addEventListener('scroll', function(){
+        pastPrice = document.getElementById('price').getBoundingClientRect().top < 0;
+        reachedEnd = document.getElementById('fallback').getBoundingClientRect().top < window.innerHeight*0.6;
+        applyStickyState();
+      }, {passive:true});
+    }
+  }
+
+  function setExpiredPrice(){
+    document.getElementById('timerBox').style.display = 'none';
+    document.querySelector('.price-block .old').style.display='none';
+    document.getElementById('priceMain').textContent = '4 500₽';
+    document.getElementById('priceUnder').textContent = 'Курс «Сам себе астролог»';
+    document.getElementById('stickyPrice').textContent = '4 500₽';
+  }
+
+  /* ---------- reveal on scroll ---------- */
+  function observeReveals(){
+    if (!('IntersectionObserver' in window)){
+      document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){ entry.target.classList.add('in'); io.unobserve(entry.target); }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    document.querySelectorAll('.reveal:not(.in)').forEach(function(el){ io.observe(el); });
+  }
+  observeReveals();
+
+  /* ---------- services accordion ---------- */
+  var svcToggle = document.getElementById('svcToggle'), svcPanel = document.getElementById('svcPanel');
+  svcToggle.addEventListener('click', function(){
+    var open = svcPanel.classList.toggle('open');
+    svcToggle.setAttribute('aria-expanded', open? 'true':'false');
+    svcToggle.querySelector('span').textContent = open ? 'Скрыть услуги и цены' : 'Показать услуги и цены';
+  });
+
+})();
+</script>
+</body>
+</html>
