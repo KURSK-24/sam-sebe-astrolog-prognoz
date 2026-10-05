@@ -680,6 +680,7 @@
   }
 
   var SIGNS = ["Овен","Телец","Близнецы","Рак","Лев","Дева","Весы","Скорпион","Стрелец","Козерог","Водолей","Рыбы"];
+  var SIGN_INTO = ["в Овна","в Тельца","в Близнецов","в Рака","во Льва","в Деву","в Весы","в Скорпиона","в Стрельца","в Козерога","в Водолея","в Рыб"]; // винительный "входит в Х"
   var SIGN_GEN = ["Овна","Тельца","Близнецов","Рака","Льва","Девы","Весов","Скорпиона","Стрельца","Козерога","Водолея","Рыб"]; // родительный падеж "в знаке Х"
   var SIGN_LOC = ["Овне","Тельце","Близнецах","Раке","Льве","Деве","Весах","Скорпионе","Стрельце","Козероге","Водолее","Рыбах"]; // предложный "в Х"
 
@@ -877,6 +878,27 @@
     }
   ];
 
+  // Ретроградность САМОЙ планеты сферы меняет смысл месяца: раньше она
+  // попадала только в подпись, а текст и микродействие оставались «на старт»
+  var BASE_RETRO = {
+    money: {
+      clause: " Важно: Юпитер в этом месяце ретрограден. Деньги скорее придут из старых источников и незакрытых дел, чем из новых, а большие финансовые рывки сейчас лучше не затевать.",
+      micro: "Вместо нового источника дохода вернитесь к старым: кто вам должен, какие предложения вы не довели до конца, какие счета давно не выставлены."
+    },
+    relationships: {
+      clause: " Важно: Венера в этом месяце идёт ретроградно. В отношениях это время возвращений и пересмотра - может напомнить о себе человек из прошлого, всплыть старая обида или давний разговор. Начинать новое и рвать сгоряча сейчас не стоит, а вот понять, чего вы на самом деле хотите, - самое время.",
+      micro: "Не принимайте резких решений в отношениях и не возвращайтесь к прошлому на эмоциях - запишите, что всплывает, и вернитесь к этому, когда Венера пойдёт прямо."
+    },
+    career: {
+      clause: " Важно: Марс в этом месяце ретрограден. В деле всплывают старые проекты и незакрытые договорённости, а новые запуски буксуют сильнее обычного.",
+      micro: "Не запускайте новое и не форсируйте - доведите до конца то, что уже начато, и разберите отложенные задачи."
+    },
+    health: {
+      clause: " Важно: Сатурн в этом месяце ретрограден. Тело напоминает о старом - о режиме, который вы забросили, и о том, что давно стоило проверить.",
+      micro: "Вернитесь к тому, что телу уже помогало раньше - режиму, врачу, привычной практике, - вместо новой радикальной программы."
+    }
+  };
+
   var RETRO_CLAUSE = {
     mercury: " Добавьте к этому - Меркурий в этом месяце ретрограден: любые договорённости, переводы и обещания перепроверяйте дважды, прежде чем на них полагаться.",
     mars: " И ещё - Марс в этом месяце ретрограден: старые конфликты и старые проекты имеют шанс всплыть заново, но начинать что-то принципиально новое сейчас не время.",
@@ -898,6 +920,9 @@
     var scenario = pickConnector(canonical, offsetRaw, sphere.key)(planetName, baseSign) + " " + sphere.lead(hard);
 
     var baseRetro = isRetrograde(sphere.base, refDate);
+    if (baseRetro && BASE_RETRO[sphere.key]){
+      scenario += BASE_RETRO[sphere.key].clause;
+    }
     if (sphere.retroClause && isRetrograde(sphere.retroClause, refDate)){
       scenario += RETRO_CLAUSE[sphere.retroClause];
     }
@@ -908,15 +933,15 @@
     }
 
     // датированные точки: сначала реальный ingress/станция базовой планеты в этом месяце, потом дни Луны
-    var dated = [];
+    var planetDated = [];
     var baseEvents = scanMonthEvents(sphere.base, year, month);
     baseEvents.forEach(function(ev){
       if (ev.type==='ingress'){
-        dated.push({day:ev.day, text: planetName+" входит в "+SIGN_GEN[ev.sign]+" - тон сферы на остаток месяца меняется, обрати внимание на день перехода."});
+        planetDated.push({day:ev.day, text: planetName+" входит "+SIGN_INTO[ev.sign]+" - тон сферы на остаток месяца меняется, обратите внимание на день перехода."});
       } else if (ev.type==='stationR'){
-        dated.push({day:ev.day, text: planetName+" останавливается и уходит в ретроград - день, когда стоит зафиксировать текущее положение дел, а не начинать новое."});
+        planetDated.push({day:ev.day, text: planetName+" останавливается и уходит в ретроград - день, когда стоит зафиксировать текущее положение дел, а не начинать новое."});
       } else if (ev.type==='stationD'){
-        dated.push({day:ev.day, text: planetName+" выходит из ретроградности и идёт вперёд - хороший день, чтобы возобновить то, что стояло на паузе."});
+        planetDated.push({day:ev.day, text: planetName+" выходит из ретроградности и идёт вперёд - хороший день, чтобы возобновить то, что стояло на паузе."});
       }
     });
     // Смешиваем лёгкие и напряжённые дни внутри одной сферы - даже если общий
@@ -924,39 +949,33 @@
     // всё равно бывают отдельные дни, где стоит притормозить, и наоборот.
     var easyDays = moonAspectDays(year, month, userSignIdx, sphere.moonAspectsEasy || [], 2);
     var hardDays = moonAspectDays(year, month, userSignIdx, sphere.moonAspects || [], 2);
-    easyDays.forEach(function(day, idx){
-      dated.push({day:day, text: sphere.moonTextEasy[idx % sphere.moonTextEasy.length]});
+    var easyPts = easyDays.map(function(day, idx){ return {day:day, text: sphere.moonTextEasy[idx % sphere.moonTextEasy.length]}; });
+    var hardPts = hardDays.map(function(day, idx){ return {day:day, text: sphere.moonTextHard[idx % sphere.moonTextHard.length]}; });
+    // не больше 3 точек. Реальные события планеты (смена знака, разворот) идут
+    // первыми и не вырезаются ради лунных дней - это главные даты месяца.
+    // Оставшиеся места добирают лунные дни, по возможности один лёгкий и один
+    // напряжённый, а не только одна сторона
+    var dated = planetDated.slice(0,3);
+    var room = 3 - dated.length;
+    var moonPicked = [];
+    if (room >= 2 && easyPts.length && hardPts.length){ moonPicked.push(easyPts[0], hardPts[0]); }
+    easyPts.concat(hardPts).sort(function(a,b){ return a.day-b.day; }).forEach(function(p){
+      if (moonPicked.length < room && moonPicked.indexOf(p) === -1) moonPicked.push(p);
     });
-    hardDays.forEach(function(day, idx){
-      dated.push({day:day, text: sphere.moonTextHard[idx % sphere.moonTextHard.length]});
-    });
+    dated = dated.concat(moonPicked.slice(0, room));
     dated.sort(function(a,b){ return a.day-b.day; });
-    // не больше 3 точек, но стараемся оставить хотя бы одну лёгкую и одну
-    // напряжённую, если обе реально есть в этом месяце - не только одну сторону
-    if (dated.length > 3){
-      var kept = dated.slice(0,3);
-      var hasEasy = kept.some(function(p){ return sphere.moonTextEasy.indexOf(p.text)!==-1; });
-      var hasHard = kept.some(function(p){ return sphere.moonTextHard.indexOf(p.text)!==-1; });
-      if (!hasEasy){
-        var firstEasy = dated.find(function(p){ return sphere.moonTextEasy.indexOf(p.text)!==-1; });
-        if (firstEasy) kept[2] = firstEasy;
-      } else if (!hasHard){
-        var firstHard = dated.find(function(p){ return sphere.moonTextHard.indexOf(p.text)!==-1; });
-        if (firstHard) kept[2] = firstHard;
-      }
-      kept.sort(function(a,b){ return a.day-b.day; });
-      dated = kept;
-    }
     if (dated.length===0){
       dated.push({day:15, text: planetName+" весь месяц остаётся в "+SIGN_LOC[baseSign]+" без резких переходов - ровный фон, без скачков."});
     }
 
     var micro = hard ? sphere.microHard : sphere.microEasy;
+    if (baseRetro && BASE_RETRO[sphere.key]) micro = BASE_RETRO[sphere.key].micro;
 
     return {
       key: sphere.key, title: sphere.title, planetName: planetName, sign: SIGNS[baseSign],
       eyebrow: "по " + PLANET_DAT[sphere.base] + (baseRetro? " ("+PLANET_RETRO_DAT[sphere.base]+")":"") + " в " + SIGN_LOC[baseSign],
-      headline: hard ? (sphere.title+": месяц требует внимания") : (sphere.title+": месяц работает на вас"),
+      headline: (baseRetro && BASE_RETRO[sphere.key]) ? (sphere.title+": месяц пересмотра")
+        : hard ? (sphere.title+": месяц требует внимания") : (sphere.title+": месяц работает на вас"),
       scenario: scenario, dated: dated, micro: micro, hard: hard
     };
   }
